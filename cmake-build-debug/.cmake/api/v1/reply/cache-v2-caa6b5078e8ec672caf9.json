@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/thero/Downloads/Fichiers fournis TP 1-20241108/cmake-build-debug"
+			"value" : "c:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -431,7 +431,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108"
+			"value" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1135,7 +1135,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108/cmake-build-debug"
+			"value" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10/cmake-build-debug"
 		},
 		{
 			"name" : "Fichiers_fournis_TP_1_20241108_IS_TOP_LEVEL",
@@ -1159,7 +1159,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108"
+			"value" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",

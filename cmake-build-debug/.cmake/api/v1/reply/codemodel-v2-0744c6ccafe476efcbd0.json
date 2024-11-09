@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Fichiers_fournis_TP_1_20241108::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Fichiers_fournis_TP_1_20241108-Debug-f6e3806677740e5d8c66.json",
+					"jsonFile" : "target-Fichiers_fournis_TP_1_20241108-Debug-602319a25c7c23ddc5eb.json",
 					"name" : "Fichiers_fournis_TP_1_20241108",
 					"projectIndex" : 0
 				}
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108/cmake-build-debug",
-		"source" : "C:/Users/thero/Downloads/Fichiers fournis TP 1-20241108"
+		"build" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10/cmake-build-debug",
+		"source" : "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10"
 	},
 	"version" : 
 	{
