@@ -16,61 +16,78 @@
 //  ---------------------------------------
 
 void noeud_init(Noeud noeud, int ligne, int colonne, int g, int h, int p) {
-	// A completer
+	noeud[NOEUD_INDICE_LIGNE] = ligne;
+	noeud[NOEUD_INDICE_COLONNE] = colonne;
+	noeud[NOEUD_INDICE_G] = g;
+	noeud[NOEUD_INDICE_H] = h;
+	noeud[NOEUD_INDICE_P] = p;
 }
 
 void noeud_copier(Noeud dest, const Noeud src) {
-	// A completer
+	//PROOOOOOOOOOOOFEEEEEEEEESSEEEEEEEEEEUR VERIFIER SI BIEN ECRIT OU UTILISER BOUCLE FOR!!!!!!!!
+	dest[NOEUD_INDICE_LIGNE] = src[NOEUD_INDICE_LIGNE];
+	dest[NOEUD_INDICE_COLONNE] = src[NOEUD_INDICE_COLONNE];
+	dest[NOEUD_INDICE_G] = src[NOEUD_INDICE_G];
+	dest[NOEUD_INDICE_H] = src[NOEUD_INDICE_H];
+	dest[NOEUD_INDICE_P] = src[NOEUD_INDICE_P];
 }
 
 int noeud_get_ligne(const Noeud noeud) {
-	// A completer
+	return noeud[NOEUD_INDICE_LIGNE];
 }
 
 int noeud_get_colonne(const Noeud noeud) {
-	// A completer
+	return noeud[NOEUD_INDICE_COLONNE];
 }
 
 int noeud_get_distance(const Noeud noeud) {
-	// A completer
+	return noeud[NOEUD_INDICE_G];
 }
 
 int noeud_get_heuristique(const Noeud noeud) {
-	// A completer
+	return noeud[NOEUD_INDICE_H];
 }
 
 int noeud_get_precedent(const Noeud noeud) {
-	// A completer
+	return noeud[NOEUD_INDICE_P];
 }
 
 void noeud_set_ligne(Noeud noeud, int ligne) {
-	// A completer
+	noeud[NOEUD_INDICE_LIGNE] = ligne;
 }
 
 void noeud_set_colonne(Noeud noeud, int colonne) {
-	// A completer
+	noeud[NOEUD_INDICE_COLONNE] = colonne;
 }
 
 void noeud_set_distance(Noeud noeud, int g) {
-	// A completer
+	noeud[NOEUD_INDICE_G] = g;
 }
 
 void noeud_set_heuristique(Noeud noeud, int h) {
-	// A completer
+	noeud[NOEUD_INDICE_H] = h;
 }
 
 void noeud_set_precedent(Noeud noeud, int p) {
-	// A completer
+	noeud[NOEUD_INDICE_P] = p;
 }
 
 int noeud_get_evaluation(const Noeud noeud) {
-	// A completer
+	int evaluation = noeud[NOEUD_INDICE_G] + noeud[NOEUD_INDICE_H];
+	return evaluation;
 }
 
 bool noeud_sont_egaux(const Noeud n1, const Noeud n2) {
-	// A completer
+	bool sont_egaux = false;
+	if (n1[NOEUD_INDICE_LIGNE] == n2[NOEUD_INDICE_LIGNE] && n1[NOEUD_INDICE_COLONNE] == n2[NOEUD_INDICE_COLONNE])
+		sont_egaux = true;
+	return sont_egaux;
 }
 
 void noeud_afficher(const Noeud noeud) {
-	// A completer
+	//PROFEEEEEEEESSEEEEEEEEEEEEEEUR, FAUT-IL PRINTF LES INFOS? ILS LES VEUT SOUS QUEL FORMAT LES INFORMATIONS?????
+	printf("Noeud :\nLigne : %i\nColonne : %i\nDistance du noeud de depart a ce noeud : %i\n"
+	       "Distance heuristique de ce noeud au noeud d'arrivee : %i\n"
+	       "L'indice du noeud precedent celui-ci dans le chemin trouve : %i\n", noeud[NOEUD_INDICE_LIGNE]
+	       , noeud[NOEUD_INDICE_COLONNE], noeud[NOEUD_INDICE_G], noeud[NOEUD_INDICE_H], noeud[NOEUD_INDICE_P]);
 }
