@@ -16,7 +16,6 @@
 //  ----------------------------------------
 
 void liste_init(Liste liste, int limite) {
-	mdwqmdpo
 }
 
 int liste_get_nb_elements(const Liste liste) {
