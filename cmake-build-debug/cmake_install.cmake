@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10
+# Install script for directory: C:/Users/Joseph/Documents/GitHub/2024A_INF155_12_TP1_Equipe10
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/thero/CLionProjects/2024A_INF155_12_TP1_Equipe10/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Joseph/Documents/GitHub/2024A_INF155_12_TP1_Equipe10/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

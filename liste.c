@@ -16,34 +16,72 @@
 //  ----------------------------------------
 
 void liste_init(Liste liste, int limite) {
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE];
 }
 
 int liste_get_nb_elements(const Liste liste) {
-	// A completer
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS];
 }
 
 int liste_get_limite(const Liste liste) {
-	// A completer
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE];
 }
 
 void liste_lire_noeud(const Liste liste, int indice, Noeud dest) {
-	// A completer
+
+	dest[0] = liste[indice][0];
+	dest[1] = liste[indice][1];
+	dest[2] = liste[indice][2];
+	dest[3] = liste[indice][3];
+	dest[4] = liste[indice][4];
 }
 
 void liste_ecrire_noeud(Liste liste, int indice, const Noeud src) {
-	// A completer
+		for(int colonne = 0; colonne < 5; colonne++)
+	liste[indice][colonne] = src[colonne] ;
 }
 
 bool liste_est_vide(const Liste liste) {
-	// A completer
+	int verificateur = 0;
+	for(int ligne = 1; ligne < MAX_LISTE;ligne++) {
+		for(int colonne = 0; colonne < 5 ;colonne++) {
+			if(liste[ligne][colonne] !=- 1 ) {
+				verificateur++;
+				return false;
+				break;
+			}
+		}
+	}
+	if(verificateur == 0) {
+		return true;
+	}
 }
 
 bool liste_est_pleine(const Liste liste) {
-	// A completer
+	int limite = liste_get_limite(liste);
+	int verificateur = 0;
+	for(int ligne = 1; ligne <= limite;ligne++) {
+		for(int colonne = 0; colonne < 5;colonne++) {
+			if(liste[ligne][colonne] == -1) {
+				verificateur++;
+				return false;
+			}
+		}
+	}
+	if(verificateur == 0) {
+		return true;
+	}
 }
 
 void liste_afficher(const Liste liste) {
-	// A completer
+	int nb_de_noeud = liste_get_nb_elements(liste);
+	for(int ligne = 1; ligne <= nb_de_noeud;ligne++) {
+		for(int colonne = 0; colonne < 5; colonne++) {
+			if(colonne == 0) {
+				printf("Noeud#%d ligne:%d colonne:%d g: h:%d p:%d", liste[ligne][colonne],liste[ligne][colonne + 1],liste[ligne][colonne + 2],liste[ligne][colonne + 3], liste[ligne][colonne + 4] );
+			}
+		}
+	}
 }
 
 int liste_chercher_noeud(const Liste liste, const Noeud noeud) {
