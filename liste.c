@@ -17,22 +17,6 @@
 //  ----------------------------------------
 
 void liste_init(Liste liste, int limite) {
-<<<<<<< Updated upstream
-	mdwqmdpo
-}
-
-int liste_get_nb_elements(const Liste liste) {
-	// A completer
-}
-
-int liste_get_limite(const Liste liste) {
-	// A completer
-}
-
-void liste_lire_noeud(const Liste liste, int indice, Noeud dest) {
-	// A completer
-=======
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS] = 0;
 	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE] = limite;
 }
 
@@ -46,26 +30,9 @@ int liste_get_limite(const Liste liste) {
 
 void liste_lire_noeud(const Liste liste, int indice, Noeud dest) {
 	noeud_copier(dest, liste[indice]);
->>>>>>> Stashed changes
 }
-
 
 void liste_ecrire_noeud(Liste liste, int indice, const Noeud src) {
-<<<<<<< Updated upstream
-	// A completer
-}
-
-bool liste_est_vide(const Liste liste) {
-	// A completer
-}
-
-bool liste_est_pleine(const Liste liste) {
-	// A completer
-}
-
-void liste_afficher(const Liste liste) {
-	// A completer
-=======
 	noeud_copier(liste[indice], src);
 }
 
@@ -79,21 +46,22 @@ bool liste_est_vide(const Liste liste) {
 }
 
 bool liste_est_pleine(const Liste liste) {
-	bool liste_pleine = false;
+	bool plein = false;
 
-	if (liste_get_nb_elements(liste) != 0)
-		liste_pleine = true;
-
-	return liste_pleine;
+	if (liste_get_nb_elements(liste) == liste_get_limite(liste)) {
+		plein = true;
+	}
+	return plein;
 }
 
 void liste_afficher(const Liste liste) {
 	int limite = liste_get_nb_elements(liste);
 
-	for (int ligne = 1; ligne <= limite; ligne++)
+	for (int ligne = 1; ligne <= limite; ligne++) {
 		noeud_afficher(liste[ligne]);
->>>>>>> Stashed changes
+	}
 }
+
 
 int liste_chercher_noeud(const Liste liste, const Noeud noeud) {
 	int indice_noeud = INDICE_NON_TROUVE;
