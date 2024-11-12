@@ -3,6 +3,7 @@
 //
 #include "liste.h"
 #include <assert.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -16,86 +17,84 @@
 //  ----------------------------------------
 
 void liste_init(Liste liste, int limite) {
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE];
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE] = limite;
 }
 
 int liste_get_nb_elements(const Liste liste) {
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS];
+	return liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS];
 }
 
 int liste_get_limite(const Liste liste) {
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE];
+	return liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE];
 }
 
 void liste_lire_noeud(const Liste liste, int indice, Noeud dest) {
-
-	dest[0] = liste[indice][0];
-	dest[1] = liste[indice][1];
-	dest[2] = liste[indice][2];
-	dest[3] = liste[indice][3];
-	dest[4] = liste[indice][4];
+	noeud_copier(dest, liste[indice]);
 }
 
 void liste_ecrire_noeud(Liste liste, int indice, const Noeud src) {
-		for(int colonne = 0; colonne < 5; colonne++)
-	liste[indice][colonne] = src[colonne] ;
+	noeud_copier(liste[indice], src);
 }
 
 bool liste_est_vide(const Liste liste) {
-	int verificateur = 0;
-	for(int ligne = 1; ligne < MAX_LISTE;ligne++) {
-		for(int colonne = 0; colonne < 5 ;colonne++) {
-			if(liste[ligne][colonne] !=- 1 ) {
-				verificateur++;
-				return false;
-				break;
-			}
-		}
-	}
-	if(verificateur == 0) {
-		return true;
-	}
+	bool liste_vide = false;
+
+	if (liste_get_nb_elements(liste) == 0)
+		liste_vide = true;
+
+	return liste_vide;
 }
 
 bool liste_est_pleine(const Liste liste) {
-	int limite = liste_get_limite(liste);
-	int verificateur = 0;
-	for(int ligne = 1; ligne <= limite;ligne++) {
-		for(int colonne = 0; colonne < 5;colonne++) {
-			if(liste[ligne][colonne] == -1) {
-				verificateur++;
-				return false;
-			}
-		}
+	bool plein = false;
+
+	if (liste_get_nb_elements(liste) == liste_get_limite(liste)) {
+		plein = true;
 	}
-	if(verificateur == 0) {
-		return true;
-	}
+	return plein;
 }
 
 void liste_afficher(const Liste liste) {
-	int nb_de_noeud = liste_get_nb_elements(liste);
-	for(int ligne = 1; ligne <= nb_de_noeud;ligne++) {
-		for(int colonne = 0; colonne < 5; colonne++) {
-			if(colonne == 0) {
-				printf("Noeud#%d ligne:%d colonne:%d g: h:%d p:%d", liste[ligne][colonne],liste[ligne][colonne + 1],liste[ligne][colonne + 2],liste[ligne][colonne + 3], liste[ligne][colonne + 4] );
-			}
-		}
+	int limite = liste_get_nb_elements(liste);
+
+	for (int ligne = 1; ligne <= limite; ligne++) {
+		noeud_afficher(liste[ligne]);
 	}
 }
 
+
 int liste_chercher_noeud(const Liste liste, const Noeud noeud) {
-	// A completer
+	int indice_noeud = INDICE_NON_TROUVE;
+	int limite = liste_get_limite(liste);
+
+	for (int indice = 1; indice <= limite; indice++)
+		if (noeud_sont_egaux(noeud, liste[indice]))
+			indice_noeud = indice;
+
+	return indice_noeud;
 }
 
 int liste_chercher_noeud_min_distance(const Liste liste) {
-	// A completer
+	int indice_du_plus_petit_eval = INDICE_NON_TROUVE;
+	int min_eval = INT_MAX;
+
+	int limite = liste_get_limite(liste);
+	for (int indice = 1; indice <= limite; indice++)
+		if (min_eval > noeud_get_evaluation(liste[indice])) {
+			min_eval = noeud_get_evaluation(liste[indice]);
+			indice_du_plus_petit_eval = indice;
+		}
+
+	return indice_du_plus_petit_eval;
 }
 
 int liste_ajouter_noeud(Liste liste, const Noeud noeud) {
-	// A completer
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]++;
+	int indice_element_du_noeud_a_ajouter = liste_get_nb_elements(liste);
+
+	return indice_element_du_noeud_a_ajouter;
 }
 
 void liste_supprimer_noeud(Liste liste, int indice) {
-	// A completer
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]--;
 }
