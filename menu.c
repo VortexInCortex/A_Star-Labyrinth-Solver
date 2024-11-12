@@ -3,6 +3,7 @@
 //
 #include "menu.h"
 #include "labyrinthe.h"
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -78,25 +79,73 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
 //  -------------------------------------
 
 void menu_lire_fichier(Labyrinthe lab) {
-	// A completer
+    char base_file_path[] = "..\\"; // On prend que jusqu'a 40 chars pour la location du fichier labyrinthe
+    char file_name_buffer[33] = {0};
+    char file_type[] = ".txt";
+    char file_path[40] = {0};
+
+    scanf("%33[a-zA-Z0-9_-]s", &file_name_buffer);
+
+    sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
+    labyrinthe_lire_fichier(file_path, lab);
 }
 
 void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
-	// A completer
 }
 
 bool choix_est_correct(int choix, const Status status) {
-	// A completer
+    bool est_correct = false;
+
+    switch (choix) {
+        case MENU_CHOIX_CHARGER:
+            if (status[MENU_STATUS_INDICE_CHARGER] == false)
+                est_correct = true;
+            break;
+        case MENU_CHOIX_AFFICHER:
+            if (status[MENU_STATUS_INDICE_CHARGER] == true)
+                est_correct = true;
+            break;
+        case MENU_CHOIX_SPECIFIER_DEPART:
+            if (status[MENU_STATUS_INDICE_DEPART] == false)
+                est_correct = true;
+            break;
+        case MENU_CHOIX_SPECIFIER_ARRIVEE:
+            if (status[MENU_CHOIX_SPECIFIER_ARRIVEE] == false)
+                est_correct = true;
+            break;
+        case MENU_CHOIX_CHERCHER:
+            if ((status[MENU_STATUS_INDICE_CHARGER] == true) && (status[MENU_STATUS_INDICE_DEPART] == true) && (status[MENU_STATUS_INDICE_ARRIVEE] == true))
+                est_correct = true;
+            break;
+        default:
+            printf("Erreur dans la lecture du choix du Menu.\nAssurez-vous de choisir un nombre entre 1 et 6.");
+            break;
+    }
+
+    return est_correct;
 }
 
 void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
-	// A completer
 }
 
 //  Definitions des fonctions publiques (1)
 //  ---------------------------------------
 
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
-	// A completer
+    printf(
+        "MENU\n"
+        "%i. Charger le labyrinthe\n"
+        "%i. Afficher le labyrinthe\n"
+        "%i. Specifier la case de depart\n"
+        "%i. Specifier la case d’arrivee\n"
+        "%i. Chercher un chemin\n"
+        "%i. Quitter\n"
+        "Votre choix ? ",
+        MENU_CHOIX_CHARGER,MENU_CHOIX_AFFICHER,MENU_CHOIX_SPECIFIER_DEPART,MENU_CHOIX_SPECIFIER_ARRIVEE,MENU_CHOIX_CHERCHER, MENU_CHOIX_QUITTER);
+
+    int choix = -1;
+    scanf("%i", &choix);
+
+    return true;
 }
 

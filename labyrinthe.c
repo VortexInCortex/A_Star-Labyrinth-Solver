@@ -25,30 +25,43 @@ void labyrinthe_set_nb_colonnes(Labyrinthe lab, int nb_colonnes);
 //  -------------------------------------
 
 void labyrinthe_set_nb_lignes(Labyrinthe lab, int nb_lignes) {
-	// A completer
+    lab[LABYRINTHE_INDICE_NB_LIGNES][LABYRINTHE_INDICE_LIGNE_META] = (char) nb_lignes;
 }
 
 void labyrinthe_set_nb_colonnes(Labyrinthe lab, int nb_colonnes) {
-	// A completer
+    lab[LABYRINTHE_INDICE_NB_COLONNES][LABYRINTHE_INDICE_LIGNE_META] = (char) nb_colonnes;
 }
 
 //  Definitions des fonctions publiques (12)
 //  ----------------------------------------
 
 int labyrinthe_get_nb_lignes(const Labyrinthe lab) {
-	// A completer
+    return lab[LABYRINTHE_INDICE_NB_LIGNES][LABYRINTHE_INDICE_LIGNE_META];
 }
 
 int labyrinthe_get_nb_colonnes(const Labyrinthe lab) {
-	// A completer
+    return lab[LABYRINTHE_INDICE_NB_COLONNES][LABYRINTHE_INDICE_LIGNE_META];
 }
 
 bool labyrinthe_est_case_valide(const Labyrinthe lab, const Noeud caze) {
-	// A completer
+    bool est_case_valide = false;
+
+    int lab_ligne_max = labyrinthe_get_nb_lignes(lab);
+    int lab_colonne_max = labyrinthe_get_nb_colonnes(lab);
+    int caze_ligne = noeud_get_ligne(caze);
+    int caze_colonne = noeud_get_colonne(caze);
+
+    if ((caze_ligne > 0 && caze_ligne <= lab_ligne_max) && (caze_colonne > 0 && caze_colonne <= lab_colonne_max))
+        est_case_valide = true;
+
+    return est_case_valide;
 }
 
 char labyrinthe_lire_case(const Labyrinthe lab, const Noeud caze) {
-	// A completer
+    int caze_ligne = noeud_get_ligne(caze);
+    int caze_colonne = noeud_get_colonne(caze);
+
+    return lab[caze_ligne][caze_colonne];
 }
 
 void labyrinthe_lire_fichier(const char *nom_fichier, Labyrinthe lab) {
@@ -92,29 +105,43 @@ void labyrinthe_lire_fichier(const char *nom_fichier, Labyrinthe lab) {
 }
 
 void labyrinthe_afficher(const Labyrinthe lab) {
-	// A completer
+    //PROFESSSSSSEEEEEEEEEEEEEEURRRRRRRRR COMMEEENT FAIRE SANS COLONNEEEEE PLUSSSS 1??????????????????
+    for (int ligne = 1; ligne <= labyrinthe_get_nb_lignes(lab); ligne++) {
+        for (int colonne = 1; colonne <= labyrinthe_get_nb_colonnes(lab) + 1; colonne++) {
+            char tmp = lab[ligne][colonne];
+            if (tmp == '*')
+                couleurs_set(STYLE_RESET, FG_BRIGHT_CYAN, BG_BRIGHT_CYAN);
+            else
+                couleurs_reset();
+
+            if (colonne == labyrinthe_get_nb_colonnes(lab) + 1)
+                printf("\n");
+            else
+                printf("%c", tmp);
+        }
+    }
 }
 
 void labyrinthe_voisins(const Labyrinthe lab, const Noeud caze, Liste voisins) {
-	// A completer
+    // A completer
 }
 
 int labyrinthe_heuristique(const Noeud depart, const Noeud arrivee) {
-	// A completer
+    // A completer
 }
 
 void labyrinthe_creer_chemin(const Liste fermee, const Noeud arrivee, Liste chemin) {
-	// A completer
+    // A completer
 }
 
 int labyrinthe_deplacer_minimum(Liste fermee, Liste ouverte) {
-	// A completer
+    // A completer
 }
 
 bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee) {
-	// A completer
+    // A completer
 }
 
 bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, Liste chemin) {
-	// A completer
+    // A completer
 }
