@@ -91,6 +91,19 @@ void menu_lire_fichier(Labyrinthe lab) {
 }
 
 void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
+    int caze_ligne = noeud_get_ligne(caze);
+    int caze_colonne = noeud_get_colonne(caze);
+    int lab_ligne_max = labyrinthe_get_nb_lignes(lab);
+    int lab_colonne_max = labyrinthe_get_nb_colonnes(lab);
+
+    do {
+        printf("Sasissez la ligne :\n");
+        scanf("%d\n", &caze_ligne);
+    } while (caze_ligne > lab_ligne_max);
+    do {
+        printf("Sasissez la colonne\n");
+        scanf("%d\n", &caze_colonne);
+    } while (caze_colonne > lab_colonne_max);
 }
 
 bool choix_est_correct(int choix, const Status status) {
@@ -114,7 +127,8 @@ bool choix_est_correct(int choix, const Status status) {
                 est_correct = true;
             break;
         case MENU_CHOIX_CHERCHER:
-            if ((status[MENU_STATUS_INDICE_CHARGER] == true) && (status[MENU_STATUS_INDICE_DEPART] == true) && (status[MENU_STATUS_INDICE_ARRIVEE] == true))
+            if ((status[MENU_STATUS_INDICE_CHARGER] == true) && (status[MENU_STATUS_INDICE_DEPART] == true) && (
+                    status[MENU_STATUS_INDICE_ARRIVEE] == true))
                 est_correct = true;
             break;
         default:
@@ -141,7 +155,8 @@ bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Lis
         "%i. Chercher un chemin\n"
         "%i. Quitter\n"
         "Votre choix ? ",
-        MENU_CHOIX_CHARGER,MENU_CHOIX_AFFICHER,MENU_CHOIX_SPECIFIER_DEPART,MENU_CHOIX_SPECIFIER_ARRIVEE,MENU_CHOIX_CHERCHER, MENU_CHOIX_QUITTER);
+        MENU_CHOIX_CHARGER,MENU_CHOIX_AFFICHER,MENU_CHOIX_SPECIFIER_DEPART,MENU_CHOIX_SPECIFIER_ARRIVEE,
+        MENU_CHOIX_CHERCHER, MENU_CHOIX_QUITTER);
 
     int choix = -1;
     scanf("%i", &choix);
