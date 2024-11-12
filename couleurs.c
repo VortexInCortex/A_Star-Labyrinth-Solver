@@ -4,7 +4,7 @@
 #include "couleurs.h"
 #include <stdio.h>
 
-#define ESCAPE "\033["
+#define ESCAPE "\x1b["
 #define RESET "0m"
 
 void couleurs_set(int style, int couleur_avant_plan, int couleur_arriere_plan) {

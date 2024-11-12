@@ -24,7 +24,6 @@ void noeud_init(Noeud noeud, int ligne, int colonne, int g, int h, int p) {
 }
 
 void noeud_copier(Noeud dest, const Noeud src) {
-	//PROOOOOOOOOOOOFEEEEEEEEESSEEEEEEEEEEUR VERIFIER SI BIEN ECRIT OU UTILISER BOUCLE FOR!!!!!!!!
 	dest[NOEUD_INDICE_LIGNE] = src[NOEUD_INDICE_LIGNE];
 	dest[NOEUD_INDICE_COLONNE] = src[NOEUD_INDICE_COLONNE];
 	dest[NOEUD_INDICE_G] = src[NOEUD_INDICE_G];
@@ -79,15 +78,14 @@ int noeud_get_evaluation(const Noeud noeud) {
 
 bool noeud_sont_egaux(const Noeud n1, const Noeud n2) {
 	bool sont_egaux = false;
+
 	if (n1[NOEUD_INDICE_LIGNE] == n2[NOEUD_INDICE_LIGNE] && n1[NOEUD_INDICE_COLONNE] == n2[NOEUD_INDICE_COLONNE])
 		sont_egaux = true;
+
 	return sont_egaux;
 }
 
 void noeud_afficher(const Noeud noeud) {
-	//PROFEEEEEEEESSEEEEEEEEEEEEEEUR, FAUT-IL PRINTF LES INFOS? ILS LES VEUT SOUS QUEL FORMAT LES INFORMATIONS?????
-	printf("Noeud :\nLigne : %i\nColonne : %i\nDistance du noeud de depart a ce noeud : %i\n"
-	       "Distance heuristique de ce noeud au noeud d'arrivee : %i\n"
-	       "L'indice du noeud precedent celui-ci dans le chemin trouve : %i\n", noeud[NOEUD_INDICE_LIGNE]
-	       , noeud[NOEUD_INDICE_COLONNE], noeud[NOEUD_INDICE_G], noeud[NOEUD_INDICE_H], noeud[NOEUD_INDICE_P]);
+	printf("[(l: %i, c: %i) g: %i,h: %i,p: %i\n", noeud[NOEUD_INDICE_LIGNE], noeud[NOEUD_INDICE_COLONNE]
+	       , noeud[NOEUD_INDICE_G], noeud[NOEUD_INDICE_H], noeud[NOEUD_INDICE_P]);
 }

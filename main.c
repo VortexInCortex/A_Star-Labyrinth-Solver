@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "menu.h"
+#include <menu.h>
 #include "liste.h"
 #include "labyrinthe.h"
 
@@ -15,8 +16,12 @@ int main() {
     Noeud depart, arrivee; //  Les cases de depart et d'arrivee
     Liste chemin; //  Le chemin trouve
 
+    menu_lire_fichier(labyrinthe);
+    labyrinthe_afficher(labyrinthe);
+    system("pause");
     //  Appel au menu tant que l'utilisateur ne choisit pas de quitter
-    while (menu(status, depart, arrivee, labyrinthe, chemin));
+    //while (menu(status, depart, arrivee, labyrinthe, chemin));
+
 
     return EXIT_SUCCESS;
 }
