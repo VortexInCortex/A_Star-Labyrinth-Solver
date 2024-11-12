@@ -84,7 +84,12 @@ void menu_lire_fichier(Labyrinthe lab) {
     char file_type[] = ".txt";
     char file_path[40] = {0};
 
-    scanf("%33[a-zA-Z0-9_-]s", &file_name_buffer);
+    do {
+        system("cls");
+        printf("Veuillez saisir le nom du fichier labyrinthe que vous voulez charger.\n");
+        fflush(stdin); // S'assure que le buffer stdin est vide avant de faire le scanf, pour eviter des conflits entre printf et scanf.
+        scanf("%33[a-zA-Z0-9_-]s", &file_name_buffer);
+    } while (file_name_buffer[0] == 0);
 
     sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
     labyrinthe_lire_fichier(file_path, lab);
@@ -164,3 +169,6 @@ bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Lis
     return true;
 }
 
+void test_menu_lire_fichier(Labyrinthe labyrinthe) {
+    menu_lire_fichier(labyrinthe);
+}

@@ -89,3 +89,10 @@ void noeud_afficher(const Noeud noeud) {
 	printf("[(l: %i, c: %i) g: %i,h: %i,p: %i\n", noeud[NOEUD_INDICE_LIGNE], noeud[NOEUD_INDICE_COLONNE]
 	       , noeud[NOEUD_INDICE_G], noeud[NOEUD_INDICE_H], noeud[NOEUD_INDICE_P]);
 }
+
+void test_noeud_afficher() {
+	Noeud noeud_test;
+	noeud_init(noeud_test, 6, 6, -1, -1, -1);
+
+	noeud_afficher(noeud_test);
+}

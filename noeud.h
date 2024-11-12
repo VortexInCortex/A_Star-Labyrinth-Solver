@@ -180,4 +180,6 @@ Paramètres modifiés: Aucun.
 */
 void noeud_afficher(const Noeud noeud);
 
+void test_noeud_afficher();
+
 #endif //NOEUD_H

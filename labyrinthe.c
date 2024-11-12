@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 
 //  Constantes privees pour un labyrinthe
 //  -------------------------------------
@@ -105,43 +106,76 @@ void labyrinthe_lire_fichier(const char *nom_fichier, Labyrinthe lab) {
 }
 
 void labyrinthe_afficher(const Labyrinthe lab) {
-    //PROFESSSSSSEEEEEEEEEEEEEEURRRRRRRRR COMMEEENT FAIRE SANS COLONNEEEEE PLUSSSS 1??????????????????
     for (int ligne = 1; ligne <= labyrinthe_get_nb_lignes(lab); ligne++) {
-        for (int colonne = 1; colonne <= labyrinthe_get_nb_colonnes(lab) + 1; colonne++) {
+        for (int colonne = 1; colonne <= labyrinthe_get_nb_colonnes(lab); colonne++) {
             char tmp = lab[ligne][colonne];
             if (tmp == '*')
                 couleurs_set(STYLE_RESET, FG_BRIGHT_CYAN, BG_BRIGHT_CYAN);
             else
                 couleurs_reset();
 
-            if (colonne == labyrinthe_get_nb_colonnes(lab) + 1)
-                printf("\n");
-            else
-                printf("%c", tmp);
+            printf("%c", tmp);
         }
+        printf("\n");
     }
+    couleurs_reset();
 }
 
 void labyrinthe_voisins(const Labyrinthe lab, const Noeud caze, Liste voisins) {
-    // A completer
+    int caze_ligne = noeud_get_ligne(caze);
+    int caze_colonne = noeud_get_colonne(caze);
+    int labyrinthe_nb_lignes = labyrinthe_get_nb_lignes(lab);
+    int labyrinthe_nb_colonnes = labyrinthe_get_nb_colonnes(lab);
+
+    const int deplacement[][2] = {{1, 0}, {0, -1}, {0, 1}, {-1, 0}};
+
+    for (int i = 0; i < 4; i++) {
+        Noeud noeud_voisin_tmp;
+        int voisin_tmp_ligne = caze_ligne + deplacement[i][0];
+        int voisin_tmp_colonne = caze_colonne + deplacement[i][1];
+        noeud_init(noeud_voisin_tmp, voisin_tmp_ligne, voisin_tmp_colonne, VALEUR_INCONNUE, VALEUR_INCONNUE, VALEUR_INCONNUE);
+        //METTRE LE P COMME L'INDICE DU NOEUD L'AJOUTANT A LA LISTE CAZE? PEUT PAS LE FAIRE CAR AUCUN ACCES A LA LISTE FERME ET DONC PEUT PAS TROUVER CAZE
+
+        //Si le Noeud voisin est dans le labyrinthe et n'est pas un mur, l'ajouter a la liste ouverte "voisins"
+        if ((voisin_tmp_ligne > 0 && voisin_tmp_ligne <= labyrinthe_nb_lignes) && (voisin_tmp_colonne > 0 && voisin_tmp_colonne <= labyrinthe_nb_colonnes)
+            && labyrinthe_lire_case(lab, noeud_voisin_tmp) == ' ')
+            liste_ajouter_noeud(voisins, noeud_voisin_tmp);
+    }
+}
+
+void test_labyrinthe_voisins() {
+    Labyrinthe labyrinthe;
+    for (int i = 0; i < 12; i++) {
+        for (int j = 0; j < 12; j++) {
+            labyrinthe[i][j] = ' ';
+        }
+    }
+
+    Liste voisin;
+    liste_init(voisin, 4);
+
+    Noeud noeud_test;
+    noeud_init(noeud_test, 6, 6, -1, -1, -1);
+    labyrinthe_voisins(labyrinthe, noeud_test, voisin);
+
+    liste_afficher(voisin);
 }
 
 int labyrinthe_heuristique(const Noeud depart, const Noeud arrivee) {
-    // A completer
+    return 0;
 }
 
 void labyrinthe_creer_chemin(const Liste fermee, const Noeud arrivee, Liste chemin) {
-    // A completer
 }
 
 int labyrinthe_deplacer_minimum(Liste fermee, Liste ouverte) {
-    // A completer
+    return 0;
 }
 
 bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee) {
-    // A completer
+    return 0;
 }
 
 bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, Liste chemin) {
-    // A completer
+    return 0;
 }

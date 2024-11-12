@@ -29,6 +29,6 @@ Paramètres modifiés: Tous.
 */
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin);
 
-void menu_lire_fichier(Labyrinthe lab); // A RETIRER
+void test_menu_lire_fichier(Labyrinthe labyrinthe);
 
 #endif //LABYRINTHE_IO_H

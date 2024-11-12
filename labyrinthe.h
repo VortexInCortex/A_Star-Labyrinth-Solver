@@ -160,4 +160,6 @@ Paramètres modifiés: Le chemin contiendra la liste des noeuds du plus court ch
 */
 bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, Liste chemin);
 
+void test_labyrinthe_voisins();
+
 #endif //LABYRINTHE_H

@@ -18,6 +18,7 @@
 
 void liste_init(Liste liste, int limite) {
 	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_LIMITE] = limite;
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS] = 0;
 }
 
 int liste_get_nb_elements(const Liste liste) {
@@ -57,8 +58,8 @@ bool liste_est_pleine(const Liste liste) {
 void liste_afficher(const Liste liste) {
 	int limite = liste_get_nb_elements(liste);
 
-	for (int ligne = 1; ligne <= limite; ligne++) {
-		noeud_afficher(liste[ligne]);
+	for (int indice = 1; indice <= limite; indice++) {
+		noeud_afficher(liste[indice]);
 	}
 }
 
@@ -92,9 +93,15 @@ int liste_ajouter_noeud(Liste liste, const Noeud noeud) {
 	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]++;
 	int indice_element_du_noeud_a_ajouter = liste_get_nb_elements(liste);
 
+	noeud_init(liste[indice_element_du_noeud_a_ajouter], noeud_get_ligne(noeud), noeud_get_colonne(noeud), noeud_get_distance(noeud)
+	           , noeud_get_heuristique(noeud), noeud_get_precedent(noeud));
+
 	return indice_element_du_noeud_a_ajouter;
 }
 
 void liste_supprimer_noeud(Liste liste, int indice) {
+	for (int indice_deplacement = indice; indice_deplacement < liste_get_nb_elements(liste); indice_deplacement++)
+		noeud_copier(liste[indice_deplacement], liste[indice_deplacement + 1]);
+
 	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]--;
 }
