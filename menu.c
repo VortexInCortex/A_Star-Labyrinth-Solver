@@ -86,9 +86,9 @@ void menu_lire_fichier(Labyrinthe lab) {
 
     do {
         system("cls");
-        printf("Veuillez saisir le nom du fichier labyrinthe que vous voulez charger.\n");
-        fflush(stdin); // S'assure que le buffer stdin est vide avant de faire le scanf, pour eviter des conflits entre printf et scanf.
+        printf("Veuillez saisir un nom de fichier labyrinthe que vous voulez charger valide : ");
         scanf("%33[a-zA-Z0-9_-]s", &file_name_buffer);
+        fflush(stdin);
     } while (file_name_buffer[0] == 0);
 
     sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
@@ -124,11 +124,11 @@ bool choix_est_correct(int choix, const Status status) {
                 est_correct = true;
             break;
         case MENU_CHOIX_SPECIFIER_DEPART:
-            if (status[MENU_STATUS_INDICE_DEPART] == false)
+            if (status[MENU_STATUS_INDICE_DEPART] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
                 est_correct = true;
             break;
         case MENU_CHOIX_SPECIFIER_ARRIVEE:
-            if (status[MENU_CHOIX_SPECIFIER_ARRIVEE] == false)
+            if (status[MENU_CHOIX_SPECIFIER_ARRIVEE] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
                 est_correct = true;
             break;
         case MENU_CHOIX_CHERCHER:
@@ -151,20 +151,27 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
 //  ---------------------------------------
 
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
-    printf(
-        "MENU\n"
-        "%i. Charger le labyrinthe\n"
-        "%i. Afficher le labyrinthe\n"
-        "%i. Specifier la case de depart\n"
-        "%i. Specifier la case d’arrivee\n"
-        "%i. Chercher un chemin\n"
-        "%i. Quitter\n"
-        "Votre choix ? ",
-        MENU_CHOIX_CHARGER,MENU_CHOIX_AFFICHER,MENU_CHOIX_SPECIFIER_DEPART,MENU_CHOIX_SPECIFIER_ARRIVEE,
-        MENU_CHOIX_CHERCHER, MENU_CHOIX_QUITTER);
+    system("cls");
+    printf("\t\tMENU\n");
+
+    if (choix_est_correct(MENU_CHOIX_CHARGER, status))
+        printf("%i. Charger le labyrinthe\n",MENU_CHOIX_CHARGER);
+    if (choix_est_correct(MENU_CHOIX_AFFICHER, status))
+        printf("%i. Afficher le labyrinthe\n",MENU_CHOIX_AFFICHER);
+    if (choix_est_correct(MENU_CHOIX_SPECIFIER_DEPART, status))
+        printf("%i. Specifier la case de depart\n",MENU_CHOIX_SPECIFIER_DEPART);
+    if (choix_est_correct(MENU_CHOIX_SPECIFIER_ARRIVEE, status))
+        printf("%i. Specifier la case d'arrivee\n",MENU_CHOIX_SPECIFIER_ARRIVEE);
+    if (choix_est_correct(MENU_CHOIX_CHERCHER, status))
+        printf("%i. Chercher un chemin\n",MENU_CHOIX_CHERCHER);
+
+    printf("%i. Quitter\nVotre choix ? ", MENU_CHOIX_QUITTER);
 
     int choix = -1;
-    scanf("%i", &choix);
+    scanf("%d", &choix);
+    fflush(stdin);
+
+    menu_traiter_choix(choix, status, depart, arrivee, labyrinthe, chemin);
 
     return true;
 }
