@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-07-17.
-//
 #include "liste.h"
 #include <assert.h>
 #include <limits.h>
@@ -56,9 +53,9 @@ bool liste_est_pleine(const Liste liste) {
 }
 
 void liste_afficher(const Liste liste) {
-	int limite = liste_get_nb_elements(liste);
+	int nb_elements = liste_get_nb_elements(liste);
 
-	for (int indice = 1; indice <= limite; indice++) {
+	for (int indice = 1; indice <= nb_elements; indice++) {
 		noeud_afficher(liste[indice]);
 	}
 }
@@ -66,9 +63,9 @@ void liste_afficher(const Liste liste) {
 
 int liste_chercher_noeud(const Liste liste, const Noeud noeud) {
 	int indice_noeud = INDICE_NON_TROUVE;
-	int limite = liste_get_limite(liste);
+	int nb_elements = liste_get_nb_elements(liste);
 
-	for (int indice = 1; indice <= limite; indice++)
+	for (int indice = 1; indice <= nb_elements; indice++)
 		if (noeud_sont_egaux(noeud, liste[indice]))
 			indice_noeud = indice;
 
@@ -79,22 +76,26 @@ int liste_chercher_noeud_min_distance(const Liste liste) {
 	int indice_du_plus_petit_eval = INDICE_NON_TROUVE;
 	int min_eval = INT_MAX;
 
-	int limite = liste_get_limite(liste);
-	for (int indice = 1; indice <= limite; indice++)
+	int nb_elements = liste_get_nb_elements(liste);
+	for (int indice = 1; indice <= nb_elements; indice++) {
 		if (min_eval > noeud_get_evaluation(liste[indice])) {
 			min_eval = noeud_get_evaluation(liste[indice]);
 			indice_du_plus_petit_eval = indice;
+		} else if (min_eval == noeud_get_evaluation(liste[indice])
+		           && noeud_get_heuristique(liste[indice_du_plus_petit_eval]) > noeud_get_heuristique(liste[indice])) {
+			min_eval = noeud_get_evaluation(liste[indice]);
+			indice_du_plus_petit_eval = indice;
 		}
+	}
 
 	return indice_du_plus_petit_eval;
 }
 
 int liste_ajouter_noeud(Liste liste, const Noeud noeud) {
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]++;
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS] += 1;
 	int indice_element_du_noeud_a_ajouter = liste_get_nb_elements(liste);
 
-	noeud_init(liste[indice_element_du_noeud_a_ajouter], noeud_get_ligne(noeud), noeud_get_colonne(noeud), noeud_get_distance(noeud)
-	           , noeud_get_heuristique(noeud), noeud_get_precedent(noeud));
+	noeud_copier(liste[indice_element_du_noeud_a_ajouter], noeud);
 
 	return indice_element_du_noeud_a_ajouter;
 }
@@ -103,5 +104,5 @@ void liste_supprimer_noeud(Liste liste, int indice) {
 	for (int indice_deplacement = indice; indice_deplacement < liste_get_nb_elements(liste); indice_deplacement++)
 		noeud_copier(liste[indice_deplacement], liste[indice_deplacement + 1]);
 
-	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS]--;
+	liste[LISTE_INDICE_LIGNE_META][LISTE_INDICE_NB_ELEMENTS] -= 1;
 }

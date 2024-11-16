@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-09-14.
-//
 #include "menu.h"
 #include "labyrinthe.h"
 #include <string.h>
@@ -79,16 +76,20 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
 //  -------------------------------------
 
 void menu_lire_fichier(Labyrinthe lab) {
-    const char base_file_path[] = "..\\"; // On prend que jusqu'a 40 chars pour la location du fichier labyrinthe
+    const char base_file_path[] = "../"; // On prend que jusqu'a 40 chars pour la location du fichier labyrinthe
     char file_name_buffer[33] = {0};
     const char file_type[] = ".txt";
     char file_path[40] = {0};
 
     do {
         system("cls");
-        printf("Veuillez saisir un nom de fichier labyrinthe que vous voulez charger valide : ");
-        scanf("%33[a-zA-Z0-9_-]s", &file_name_buffer);
+        printf("Veuillez saisir un nom de fichier labyrinthe que vous voulez charger : ");
+
         fflush(stdin);
+        while (scanf(" %32[a-zA-Z0-9_-]s", &file_name_buffer) == false) {
+            printf("\nVeuillez saisir un choix valide : ");
+            fflush(stdin);
+        }
     } while (file_name_buffer[0] == 0);
 
     sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
@@ -96,25 +97,24 @@ void menu_lire_fichier(Labyrinthe lab) {
 }
 
 void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
-    int caze_ligne = noeud_get_ligne(caze);
-    int caze_colonne = noeud_get_colonne(caze);
-    const int lab_ligne_max = labyrinthe_get_nb_lignes(lab);
-    const int lab_colonne_max = labyrinthe_get_nb_colonnes(lab);
+    int caze_ligne = 0;
+    int caze_colonne = 0;
+
+
+    system("cls");
+    printf("Saisissez la ligne et la colonne : ");
 
     int valide = false;
-    do {
-        system("cls");
-        printf("Sasissez la ligne : ");
-        valide = scanf("%d", &caze_ligne);
+    fflush(stdin);
+    while (valide == false || (labyrinthe_est_case_valide(lab, caze) == false)) {
+        valide = scanf(" %d, %d", &caze_ligne, &caze_colonne);
+        if (valide >= 0) {
+            noeud_set_ligne(caze, caze_ligne);
+            noeud_set_colonne(caze, caze_colonne);
+        }
+        printf("\nVeuillez saisir un choix valide : ");
         fflush(stdin);
-    } while (valide == false && (caze_ligne > 0 && caze_ligne <= lab_ligne_max));
-    valide = false;
-    do {
-        system("cls");
-        printf("Sasissez la colonne : ");
-        valide = scanf("%d", &caze_colonne);
-        fflush(stdin);
-    } while (valide == false && (caze_colonne > 0 && caze_colonne <= lab_colonne_max));
+    }
 }
 
 bool choix_est_correct(int choix, const Status status) {
@@ -134,7 +134,7 @@ bool choix_est_correct(int choix, const Status status) {
                 est_correct = true;
             break;
         case MENU_CHOIX_SPECIFIER_ARRIVEE:
-            if (status[MENU_CHOIX_SPECIFIER_ARRIVEE] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
+            if (status[MENU_STATUS_INDICE_ARRIVEE] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
                 est_correct = true;
             break;
         case MENU_CHOIX_CHERCHER:
@@ -143,7 +143,9 @@ bool choix_est_correct(int choix, const Status status) {
                 est_correct = true;
             break;
         default:
-            printf("Erreur dans la lecture du choix du Menu.\nAssurez-vous de choisir un nombre entre 1 et 6.");
+            system("cls");
+            printf("Erreur dans la lecture du choix du Menu, comment etes-vous ici? Un photon a frappe votre memoire a l'adresse de choix et a bit-flip?"
+                "Vous devriez appeler les nouvelles, vous etes une des rares personne a qui c'est arrive.\n");
             break;
     }
 
@@ -151,35 +153,79 @@ bool choix_est_correct(int choix, const Status status) {
 }
 
 void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
+    switch (choix) {
+        case MENU_CHOIX_CHARGER:
+            menu_lire_fichier(labyrinthe);
+            status[MENU_STATUS_INDICE_CHARGER] = true;
+            break;
+        case MENU_CHOIX_AFFICHER:
+            system("cls");
+            labyrinthe_afficher(labyrinthe);
+            system("pause");
+            break;
+        case MENU_CHOIX_SPECIFIER_DEPART:
+            menu_saisir_case(labyrinthe, depart);
+            status[MENU_STATUS_INDICE_DEPART] = true;
+            break;
+        case MENU_CHOIX_SPECIFIER_ARRIVEE:
+            menu_saisir_case(labyrinthe, arrivee);
+            status[MENU_STATUS_INDICE_ARRIVEE] = true;
+            break;
+        case MENU_CHOIX_CHERCHER:
+            liste_init(chemin,MAX_LISTE);
+
+            if (labyrinthe_A_star(labyrinthe, depart, arrivee, chemin) == true)
+                liste_afficher(chemin);
+            system("pause");
+            break;
+        case MENU_CHOIX_QUITTER:
+            //programme_status_execution = false;
+            break;
+        default:
+            system("cls");
+            printf("Erreur dans la lecture du choix du Menu.\nAssurez-vous de choisir un nombre entre 1 et 6.\n");
+            break;
+    }
 }
 
-//  Definitions des fonctions publiques (1)
+//  Definitions des fonctions publiques (2)
 //  ---------------------------------------
 
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
+    bool programme_status_execution = true;
+
     system("cls");
-    printf("\t\tMENU\n");
+    printf("\tMENU\n");
 
     if (choix_est_correct(MENU_CHOIX_CHARGER, status))
         printf("%i. Charger le labyrinthe\n",MENU_CHOIX_CHARGER);
+
     if (choix_est_correct(MENU_CHOIX_AFFICHER, status))
         printf("%i. Afficher le labyrinthe\n",MENU_CHOIX_AFFICHER);
+
     if (choix_est_correct(MENU_CHOIX_SPECIFIER_DEPART, status))
         printf("%i. Specifier la case de depart\n",MENU_CHOIX_SPECIFIER_DEPART);
+
     if (choix_est_correct(MENU_CHOIX_SPECIFIER_ARRIVEE, status))
         printf("%i. Specifier la case d'arrivee\n",MENU_CHOIX_SPECIFIER_ARRIVEE);
+
     if (choix_est_correct(MENU_CHOIX_CHERCHER, status))
         printf("%i. Chercher un chemin\n",MENU_CHOIX_CHERCHER);
 
     printf("%i. Quitter\nVotre choix ? ", MENU_CHOIX_QUITTER);
 
     int choix = -1;
-    scanf("%d", &choix);
+    while (scanf("%d", &choix) == false) {
+        printf("\nVeuillez saisir un choix valide : ");
+        fflush(stdin);
+    }
     fflush(stdin);
 
     menu_traiter_choix(choix, status, depart, arrivee, labyrinthe, chemin);
+    if (choix == MENU_CHOIX_QUITTER)
+        programme_status_execution = false;
 
-    return true;
+    return programme_status_execution;
 }
 
 void test_menu_lire_fichier(Labyrinthe labyrinthe) {

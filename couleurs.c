@@ -1,6 +1,3 @@
-//
-// Created by root on 11/09/24.
-//
 #include "couleurs.h"
 #include <stdio.h>
 

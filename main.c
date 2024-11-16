@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "menu.h"
-#include <menu.h>
 #include "liste.h"
 #include "labyrinthe.h"
 
@@ -15,15 +14,8 @@ int main() {
     Labyrinthe labyrinthe; //  Le labyrinthe dans lequel on va chercher un chemin
     Noeud depart, arrivee; //  Les cases de depart et d'arrivee
     Liste chemin; //  Le chemin trouve
+    liste_init(chemin,MAX_LISTE);
 
-    // test_menu_lire_fichier(labyrinthe);
-    // labyrinthe_afficher(labyrinthe);
-    // test_noeud_afficher();
-    //system("pause");
-    // system("cls");
-    // test_labyrinthe_voisins();
-    //system("pause");
-    //  Appel au menu tant que l'utilisateur ne choisit pas de quitter
     while (menu(status, depart, arrivee, labyrinthe, chemin));
 
 

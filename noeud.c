@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-07-23.
-//
 #include "noeud.h"
 #include <stdio.h>
 
@@ -79,14 +76,14 @@ int noeud_get_evaluation(const Noeud noeud) {
 bool noeud_sont_egaux(const Noeud n1, const Noeud n2) {
 	bool sont_egaux = false;
 
-	if (n1[NOEUD_INDICE_LIGNE] == n2[NOEUD_INDICE_LIGNE] && n1[NOEUD_INDICE_COLONNE] == n2[NOEUD_INDICE_COLONNE])
+	if ((n1[NOEUD_INDICE_LIGNE] == n2[NOEUD_INDICE_LIGNE]) && (n1[NOEUD_INDICE_COLONNE] == n2[NOEUD_INDICE_COLONNE]))
 		sont_egaux = true;
 
 	return sont_egaux;
 }
 
 void noeud_afficher(const Noeud noeud) {
-	printf("[(l: %i, c: %i) g: %i,h: %i,p: %i\n", noeud[NOEUD_INDICE_LIGNE], noeud[NOEUD_INDICE_COLONNE]
+	printf("[(l: %i, c: %i) g: %i,h: %i,p: %i]\n", noeud[NOEUD_INDICE_LIGNE], noeud[NOEUD_INDICE_COLONNE]
 	       , noeud[NOEUD_INDICE_G], noeud[NOEUD_INDICE_H], noeud[NOEUD_INDICE_P]);
 }
 

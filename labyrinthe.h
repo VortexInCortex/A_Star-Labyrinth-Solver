@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-07-17.
-//
 #ifndef LABYRINTHE_H
 #define LABYRINTHE_H
 
@@ -145,7 +142,7 @@ Paramètres:
 Retour: True si on a atteint le noeud d'arrivee, false sinon.
 Paramètres modifiés: La liste ouverte dont on a enleve un noeud et la liste fermee dans laquelle on a ajoute ce noeud.
 */
-bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee);
+bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee, Liste chemin);
 
 /*
 Fonction: labyrinthe_A_star
@@ -158,8 +155,10 @@ Retour: true si un chemin a ete trouve, false sinon.
 Paramètres modifiés: Le chemin contiendra la liste des noeuds du plus court chemin trouve.
                      La liste sera vide si aucun chemin n'a ete trouve.
 */
-bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, Liste chemin);
+bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee,/*DEBUG*/ Liste chemin);
 
 void test_labyrinthe_voisins();
+
+void test_labyrinthe_A_Star(Labyrinthe lab, const Liste ouverte, const Liste fermee, const Liste chemin);
 
 #endif //LABYRINTHE_H

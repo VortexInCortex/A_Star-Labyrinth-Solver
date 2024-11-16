@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-09-14.
-//
 #ifndef LABYRINTHE_IO_H
 #define LABYRINTHE_IO_H
 
@@ -11,7 +8,7 @@
 //  ------------------------------
 typedef bool Status[3];
 
-//  Declarations des fonctions publiques (1)
+//  Declarations des fonctions publiques (2)
 //  ----------------------------------------
 
 /*

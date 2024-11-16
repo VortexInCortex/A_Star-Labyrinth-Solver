@@ -1,6 +1,3 @@
-//
-// Created by duval on 2024-07-17.
-//
 #ifndef LISTE_H
 #define LISTE_H
 
