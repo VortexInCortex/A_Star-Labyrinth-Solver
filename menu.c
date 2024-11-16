@@ -76,23 +76,36 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
 //  -------------------------------------
 
 void menu_lire_fichier(Labyrinthe lab) {
-    const char base_file_path[] = "../"; // On prend que jusqu'a 40 chars pour la location du fichier labyrinthe
+    const char base_file_path[] = "../";
     char file_name_buffer[33] = {0};
     const char file_type[] = ".txt";
-    char file_path[40] = {0};
+    char file_path[40] = {0}; // l'adresse du fichier est stockable en 40 chars
 
+    system("cls"); // Retire l'affichage du menu precedent, choix esthetique.
+    printf("Veuillez saisir un nom de fichier labyrinthe que vous voulez charger : ");
+
+    bool valide = false;
     do {
-        system("cls");
-        printf("Veuillez saisir un nom de fichier labyrinthe que vous voulez charger : ");
+        // Regex permettant de comprendre le nom du fichier meme si l'utilisateur ajoute  .txt a la fin
+        // + ne prend que 33 chars (la taille du buffe), le \x0 semble etre ajouteapres le tableau, car
+        // nos test montre que meme un fichier de 33 chars arrive a loader sans specifier la taille
+        // de file_name_buffer avec un snprintf plutot que sprintf
+        valide = scanf(" %33[a-zA-Z0-9_-]s", &file_name_buffer);
+        // valide est = 0 si le scanf ne stocke rien
 
-        fflush(stdin);
-        while (scanf(" %32[a-zA-Z0-9_-]s", &file_name_buffer) == false) {
+        if (valide == false) {
             printf("\nVeuillez saisir un choix valide : ");
+
+            // Ce fflush sert a eviter le cas ou le printf rentre dans stdin du prochain scanf et resulte
+            // en une boucle infinie. Ce qui arrive dans le menu_saisir_case du .exe du corrige sur moodle ;)
             fflush(stdin);
         }
-    } while (file_name_buffer[0] == 0);
+    } while (valide == false);
 
+    // Concatene l'adresse du fichier pour eviter que l'utilisateur ait besoin de faire le travail
+    // d'ecrire ../ et .txt
     sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
+
     labyrinthe_lire_fichier(file_path, lab);
 }
 
@@ -100,21 +113,34 @@ void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
     int caze_ligne = 0;
     int caze_colonne = 0;
 
+    int lab_ligne_max = labyrinthe_get_nb_lignes(lab);
+    int lab_colonne_max = labyrinthe_get_nb_colonnes(lab);
 
-    system("cls");
+    system("cls"); // Retire l'affichage du menu precedent, choix esthetique
     printf("Saisissez la ligne et la colonne : ");
 
-    int valide = false;
-    fflush(stdin);
-    while (valide == false || (labyrinthe_est_case_valide(lab, caze) == false)) {
-        valide = scanf(" %d, %d", &caze_ligne, &caze_colonne);
-        if (valide >= 0) {
+    bool valide = false;
+    do {
+        // valide est = 0 si le scanf ne stocke rien
+        valide = scanf("%d, %d", &caze_ligne, &caze_colonne);
+
+        // L'adresse de la caze doit etre dans le labyrinthe et doit etre compose de chiffres
+        // Nous n'utilisons pas labyrinthe_est_case_valide, car le laby.exe ne l'utilise pas pour permettre
+        // de creer des labyrinthes impossibles a resoudre
+        if (valide == true && (caze_ligne > 0 && caze_ligne <= lab_ligne_max)
+            && (caze_colonne > 0 && caze_colonne <= lab_colonne_max)) {
             noeud_set_ligne(caze, caze_ligne);
             noeud_set_colonne(caze, caze_colonne);
+        } else {
+            valide = false;
+
+            printf("\nVeuillez saisir une case se trouvant dans les bornes du labyrinthe : ");
+
+            // Ce fflush sert a eviter le cas ou le printf rentre dans stdin du prochain scanf et resulte
+            // en une boucle infinie. Ce qui arrive dans le menu_saisir_case du .exe du corrige sur moodle ;)
+            fflush(stdin);
         }
-        printf("\nVeuillez saisir un choix valide : ");
-        fflush(stdin);
-    }
+    } while (valide == false);
 }
 
 bool choix_est_correct(int choix, const Status status) {
@@ -122,30 +148,32 @@ bool choix_est_correct(int choix, const Status status) {
 
     switch (choix) {
         case MENU_CHOIX_CHARGER:
-            if (status[MENU_STATUS_INDICE_CHARGER] == false)
-                est_correct = true;
+            est_correct = true; // Reproduit le fonctionnement de laby.exe
             break;
-        case MENU_CHOIX_AFFICHER:
+        case MENU_CHOIX_AFFICHER: // NOLINT(*-branch-clone) Retire message d'erreur Clang-Tidy
             if (status[MENU_STATUS_INDICE_CHARGER] == true)
                 est_correct = true;
             break;
         case MENU_CHOIX_SPECIFIER_DEPART:
-            if (status[MENU_STATUS_INDICE_DEPART] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
+            if (status[MENU_STATUS_INDICE_CHARGER] == true)
                 est_correct = true;
             break;
         case MENU_CHOIX_SPECIFIER_ARRIVEE:
-            if (status[MENU_STATUS_INDICE_ARRIVEE] == false && status[MENU_STATUS_INDICE_CHARGER] == true)
+            // Reproduit le fonctionnement de laby.exe
+            if ((status[MENU_STATUS_INDICE_DEPART] == true) && (status[MENU_STATUS_INDICE_CHARGER] == true))
                 est_correct = true;
             break;
         case MENU_CHOIX_CHERCHER:
-            if ((status[MENU_STATUS_INDICE_CHARGER] == true) && (status[MENU_STATUS_INDICE_DEPART] == true) && (
-                    status[MENU_STATUS_INDICE_ARRIVEE] == true))
+            if ((status[MENU_STATUS_INDICE_CHARGER] == true) && (status[MENU_STATUS_INDICE_DEPART] == true)
+                && (status[MENU_STATUS_INDICE_ARRIVEE] == true))
                 est_correct = true;
             break;
+        case MENU_CHOIX_QUITTER:
+            est_correct = true;
+            break;
         default:
-            system("cls");
-            printf("Erreur dans la lecture du choix du Menu, comment etes-vous ici? Un photon a frappe votre memoire a l'adresse de choix et a bit-flip?"
-                "Vous devriez appeler les nouvelles, vous etes une des rares personne a qui c'est arrive.\n");
+            printf("\n\nErreur dans la lecture du choix du Menu."
+                "\nAssurez-vous de choisir un nombre entre 1 et 6.\n");
             break;
     }
 
@@ -159,7 +187,7 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
             status[MENU_STATUS_INDICE_CHARGER] = true;
             break;
         case MENU_CHOIX_AFFICHER:
-            system("cls");
+            system("cls"); // Retire l'affichage du menu precedent, choix esthetique.
             labyrinthe_afficher(labyrinthe);
             system("pause");
             break;
@@ -179,11 +207,13 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
             system("pause");
             break;
         case MENU_CHOIX_QUITTER:
-            //programme_status_execution = false;
+            // programme_status_execution = STOP; va etre fait avant cette fonction, puisque nous
+            // n'avons pas le droit d'ajouter d'arguments aux fonctions dans ce TP (?)
             break;
         default:
-            system("cls");
-            printf("Erreur dans la lecture du choix du Menu.\nAssurez-vous de choisir un nombre entre 1 et 6.\n");
+            printf("\n\nErreur dans la lecture du choix du Menu, comment etes-vous ici? "
+                "Un photon a frappe votre memoire a l'adresse de choix et a bit-flip avant d'enter ici?"
+                "Vous devriez appeler les nouvelles, vous etes une des rares personne a qui c'est arrive.\n");
             break;
     }
 }
@@ -192,13 +222,14 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
 //  ---------------------------------------
 
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
-    bool programme_status_execution = true;
+#define RUN 1
+#define STOP 0
 
-    system("cls");
+    bool programme_status_execution = RUN;
+
+    system("cls"); // Retire l'affichage du menu precedent, choix esthetique.
     printf("\tMENU\n");
-
-    if (choix_est_correct(MENU_CHOIX_CHARGER, status))
-        printf("%i. Charger le labyrinthe\n",MENU_CHOIX_CHARGER);
+    printf("%i. Charger le labyrinthe\n",MENU_CHOIX_CHARGER);
 
     if (choix_est_correct(MENU_CHOIX_AFFICHER, status))
         printf("%i. Afficher le labyrinthe\n",MENU_CHOIX_AFFICHER);
@@ -215,19 +246,29 @@ bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Lis
     printf("%i. Quitter\nVotre choix ? ", MENU_CHOIX_QUITTER);
 
     int choix = -1;
-    while (scanf("%d", &choix) == false) {
-        printf("\nVeuillez saisir un choix valide : ");
-        fflush(stdin);
-    }
-    fflush(stdin);
+    bool valide = false;
+    do {
+        // valide = scanf("%d",&choix) ici met l'utilisateur dans une boucle jusqu'a ce qu'il
+        // entre un entier, mais nous voulons lui indiquer quoi ecrire s'il se trompe avec une lettre
+        // par exemple
+        choix = getchar();
+        choix -= '0';
+        // valide est = true si le choix est entre 1 et 6
+        if (choix_est_correct(choix, status)) {
+            valide = true;
+        } else {
+            // Ce fflush sert a eviter le cas ou le printf de "default:" dans choix_est_correct
+            // rentre dans stdin du prochain scanf et resulte en une boucle infinie comme laby.exe ;)
+            fflush(stdin);
+        }
+    } while (valide == false);
 
-    menu_traiter_choix(choix, status, depart, arrivee, labyrinthe, chemin);
+    // Puisque nous ne pouvons pas donner la variable programme_status_exectuion a menu_traiter_choix
+    // dans ce TP (?) sinon nous utiliserions a 100% menu_traiter_choix
     if (choix == MENU_CHOIX_QUITTER)
-        programme_status_execution = false;
+        programme_status_execution = STOP;
+    else
+        menu_traiter_choix(choix, status, depart, arrivee, labyrinthe, chemin);
 
     return programme_status_execution;
-}
-
-void test_menu_lire_fichier(Labyrinthe labyrinthe) {
-    menu_lire_fichier(labyrinthe);
 }

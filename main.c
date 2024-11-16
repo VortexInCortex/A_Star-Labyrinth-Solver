@@ -14,9 +14,10 @@ int main() {
     Labyrinthe labyrinthe; //  Le labyrinthe dans lequel on va chercher un chemin
     Noeud depart, arrivee; //  Les cases de depart et d'arrivee
     Liste chemin; //  Le chemin trouve
-    liste_init(chemin,MAX_LISTE);
 
-    while (menu(status, depart, arrivee, labyrinthe, chemin));
+    while (menu(status, depart, arrivee, labyrinthe, chemin)) {
+        // Ajouter ces crochets retire l'erreure erronnee
+    };
 
 
     return EXIT_SUCCESS;

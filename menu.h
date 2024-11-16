@@ -8,7 +8,7 @@
 //  ------------------------------
 typedef bool Status[3];
 
-//  Declarations des fonctions publiques (2)
+//  Declarations des fonctions publiques (1)
 //  ----------------------------------------
 
 /*
@@ -25,7 +25,5 @@ Retour: true si l'utilisateur n'a pas choisi l'option de quitter, false sinon.
 Paramètres modifiés: Tous.
 */
 bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin);
-
-void test_menu_lire_fichier(Labyrinthe labyrinthe);
 
 #endif //LABYRINTHE_IO_H
