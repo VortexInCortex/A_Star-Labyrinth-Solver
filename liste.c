@@ -75,6 +75,9 @@ int liste_chercher_noeud(const Liste liste, const Noeud noeud) {
 
 int liste_chercher_noeud_min_distance(const Liste liste) {
 	int indice_du_plus_petit_eval = INDICE_NON_TROUVE;
+
+	// On initialise une valeur de min_distance très très grande  pour
+	// être sûr que la valeur de distance minimal soit plus petite
 	int min_eval = INT_MAX;
 
 	int nb_elements = liste_get_nb_elements(liste);
@@ -82,6 +85,9 @@ int liste_chercher_noeud_min_distance(const Liste liste) {
 		if (min_eval > noeud_get_evaluation(liste[indice])) {
 			min_eval = noeud_get_evaluation(liste[indice]);
 			indice_du_plus_petit_eval = indice;
+
+			// si il y a deux noeud avec la même valeur de f on compare leur valeur de h
+			// et on va mémoriser le noeud avec le plus plus petit h
 		} else if (min_eval == noeud_get_evaluation(liste[indice])
 		           && noeud_get_heuristique(liste[indice_du_plus_petit_eval]) > noeud_get_heuristique(liste[indice])) {
 			min_eval = noeud_get_evaluation(liste[indice]);

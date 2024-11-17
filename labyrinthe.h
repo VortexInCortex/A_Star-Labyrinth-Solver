@@ -142,8 +142,7 @@ Paramètres:
 Retour: True si on a atteint le noeud d'arrivee, false sinon.
 Paramètres modifiés: La liste ouverte dont on a enleve un noeud et la liste fermee dans laquelle on a ajoute ce noeud.
 */
-bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee
-                             /*DEBUG*/, Liste chemin);
+bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee);
 
 /*
 Fonction: labyrinthe_A_star

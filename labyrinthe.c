@@ -48,6 +48,7 @@ bool labyrinthe_est_case_valide(const Labyrinthe lab, const Noeud caze) {
     int caze_ligne = noeud_get_ligne(caze);
     int caze_colonne = noeud_get_colonne(caze);
 
+    // la caze doit se trouvée dans le labyrinthe.
     if ((caze_ligne > 0 && caze_ligne <= lab_ligne_max) && (caze_colonne > 0 && caze_colonne <= lab_colonne_max))
         est_case_valide = true;
 
@@ -132,7 +133,7 @@ void labyrinthe_voisins(const Labyrinthe lab, const Noeud caze, Liste voisins) {
 
         // Si le Noeud voisin est dans le labyrinthe, n'est pas un mur et qu'il n'est pas deja dans
         // la liste voisin, l'ajouter a la liste voisins
-        if (labyrinthe_est_case_valide(lab, noeud_voisin_tmp) && (lab[caze_ligne][caze_colonne] == ' ')
+        if (labyrinthe_est_case_valide(lab, noeud_voisin_tmp) && (lab[voisin_tmp_ligne][voisin_tmp_colonne] == ' ')
             && (liste_chercher_noeud(voisins, noeud_voisin_tmp) == INDICE_NON_TROUVE))
             liste_ajouter_noeud(voisins, noeud_voisin_tmp);
     }
@@ -167,15 +168,17 @@ void labyrinthe_creer_chemin(const Liste fermee, const Noeud arrivee, Liste chem
 int labyrinthe_deplacer_minimum(Liste fermee, Liste ouverte) {
     int indice_min = liste_chercher_noeud_min_distance(ouverte);
 
-    liste_ajouter_noeud(fermee, ouverte[indice_min]);
+    Noeud noeud_min;
+    liste_lire_noeud(ouverte, indice_min, noeud_min);
+
+    liste_ajouter_noeud(fermee, noeud_min);
     liste_supprimer_noeud(ouverte, indice_min);
 
     indice_min = liste_get_nb_elements(fermee);
     return indice_min;
 }
 
-bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee
-                             /*DEBUG*/, Liste chemin) {
+bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee) {
     bool fin_trouve = false;
 
     Noeud noeud_ajoute;
@@ -237,7 +240,7 @@ bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, 
     liste_ajouter_noeud(ouverte, depart);
 
     while (liste_get_nb_elements(ouverte) != 0) {
-        if (labyrinthe_A_star_etape(lab, fermee, ouverte, arrivee/*debug*/, chemin) == true)
+        if (labyrinthe_A_star_etape(lab, fermee, ouverte, arrivee) == true)
             chemin_trouve = true;
     }
 
@@ -311,3 +314,4 @@ void test_labyrinthe_A_Star(Labyrinthe lab, const Liste ouverte, const Liste fer
     }
     couleurs_reset();
 }
+
