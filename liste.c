@@ -58,6 +58,7 @@ void liste_afficher(const Liste liste) {
 	for (int indice = 1; indice <= nb_elements; indice++) {
 		noeud_afficher(liste[indice]);
 	}
+	printf("\n");
 }
 
 

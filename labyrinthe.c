@@ -48,7 +48,7 @@ bool labyrinthe_est_case_valide(const Labyrinthe lab, const Noeud caze) {
     int caze_ligne = noeud_get_ligne(caze);
     int caze_colonne = noeud_get_colonne(caze);
 
-    if ((caze_ligne > 0 && caze_ligne <= lab_ligne_max) && (caze_colonne > 0 && caze_colonne <= lab_colonne_max) && (lab[caze_ligne][caze_colonne] == ' '))
+    if ((caze_ligne > 0 && caze_ligne <= lab_ligne_max) && (caze_colonne > 0 && caze_colonne <= lab_colonne_max))
         est_case_valide = true;
 
     return est_case_valide;
@@ -106,7 +106,7 @@ void labyrinthe_afficher(const Labyrinthe lab) {
         for (int colonne = 1; colonne <= labyrinthe_get_nb_colonnes(lab); colonne++) {
             char tmp = lab[ligne][colonne];
             if (tmp == '*')
-                couleurs_set(STYLE_RESET, FG_BLACK, BG_BLACK);
+                couleurs_set(STYLE_RESET, FG_BRIGHT_WHITE, BG_BRIGHT_WHITE);
             else
                 couleurs_reset();
 
@@ -120,8 +120,6 @@ void labyrinthe_afficher(const Labyrinthe lab) {
 void labyrinthe_voisins(const Labyrinthe lab, const Noeud caze, Liste voisins) {
     int caze_ligne = noeud_get_ligne(caze);
     int caze_colonne = noeud_get_colonne(caze);
-    int labyrinthe_nb_lignes = labyrinthe_get_nb_lignes(lab);
-    int labyrinthe_nb_colonnes = labyrinthe_get_nb_colonnes(lab);
 
     const int deplacement[][2] = {{1, 0}, {0, -1}, {0, 1}, {-1, 0}};
 
@@ -129,10 +127,13 @@ void labyrinthe_voisins(const Labyrinthe lab, const Noeud caze, Liste voisins) {
         Noeud noeud_voisin_tmp;
         int voisin_tmp_ligne = caze_ligne + deplacement[i][0];
         int voisin_tmp_colonne = caze_colonne + deplacement[i][1];
-        noeud_init(noeud_voisin_tmp, voisin_tmp_ligne, voisin_tmp_colonne, VALEUR_INCONNUE, VALEUR_INCONNUE, VALEUR_INCONNUE);
+        noeud_init(noeud_voisin_tmp, voisin_tmp_ligne, voisin_tmp_colonne, VALEUR_INCONNUE, VALEUR_INCONNUE,
+                   VALEUR_INCONNUE);
 
-        // Si le Noeud voisin est dans le labyrinthe, n'est pas un mur et que la liste voisins n'est pas pleine, l'ajouter a la liste ouverte "voisins"
-        if (labyrinthe_est_case_valide(lab, noeud_voisin_tmp) && (liste_chercher_noeud(voisins, noeud_voisin_tmp) == INDICE_NON_TROUVE))
+        // Si le Noeud voisin est dans le labyrinthe, n'est pas un mur et qu'il n'est pas deja dans
+        // la liste voisin, l'ajouter a la liste voisins
+        if (labyrinthe_est_case_valide(lab, noeud_voisin_tmp) && (lab[caze_ligne][caze_colonne] == ' ')
+            && (liste_chercher_noeud(voisins, noeud_voisin_tmp) == INDICE_NON_TROUVE))
             liste_ajouter_noeud(voisins, noeud_voisin_tmp);
     }
 }
@@ -150,13 +151,19 @@ int labyrinthe_heuristique(const Noeud depart, const Noeud arrivee) {
 void labyrinthe_creer_chemin(const Liste fermee, const Noeud arrivee, Liste chemin) {
     int indice_tmp = liste_chercher_noeud(fermee, arrivee);
 
-    while (noeud_get_precedent(fermee[indice_tmp]) != -1) {
-        liste_ajouter_noeud(chemin, fermee[indice_tmp]); //erreur cest pas indice tmp car on connais pas lindice de larriver /// alors c a astar
-        indice_tmp = noeud_get_precedent(fermee[indice_tmp]);
+    Noeud noeud_tmp;
+    liste_lire_noeud(fermee, indice_tmp, noeud_tmp);
+    while (noeud_get_precedent(noeud_tmp) != -1) {
+        liste_ajouter_noeud(chemin, noeud_tmp);
+
+        indice_tmp = noeud_get_precedent(noeud_tmp);
+        liste_lire_noeud(fermee, indice_tmp, noeud_tmp);
     }
-    liste_ajouter_noeud(chemin, fermee[indice_tmp]);
+    liste_ajouter_noeud(chemin, noeud_tmp);
 }
 
+// Information tres contradictoire, la description des parametres modifie dit que nous ajoutons n a la liste ferme ici
+// Alors que dans l'enonce du tp, on utilise indice_min pour ajouter a la liste fermer, on ne peut pas faire les deux
 int labyrinthe_deplacer_minimum(Liste fermee, Liste ouverte) {
     int indice_min = liste_chercher_noeud_min_distance(ouverte);
 
@@ -167,129 +174,84 @@ int labyrinthe_deplacer_minimum(Liste fermee, Liste ouverte) {
     return indice_min;
 }
 
-bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee, /*DEBUG*/Liste chemin) {
+bool labyrinthe_A_star_etape(const Labyrinthe lab, Liste fermee, Liste ouverte, const Noeud arrivee
+                             /*DEBUG*/, Liste chemin) {
     bool fin_trouve = false;
 
-    //DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG
-    Labyrinthe laby;
+    Noeud noeud_ajoute;
 
-    Liste voisins;
-    liste_init(voisins,MAX_LISTE);
+    const int indice_ajoutee = labyrinthe_deplacer_minimum(fermee, ouverte);
+    liste_lire_noeud(fermee, indice_ajoutee, noeud_ajoute);
 
-    int indice_actuel = 1;
-    int nb_nouveaux_voisins = 0;
-    do {
-        labyrinthe_voisins(lab, fermee[indice_actuel], voisins);
+    if (noeud_sont_egaux(noeud_ajoute, arrivee))
+        fin_trouve = true;
+    else {
+        Liste voisins;
+        liste_init(voisins,MAX_LISTE);
 
-        nb_nouveaux_voisins = liste_get_nb_elements(ouverte);
-        int nb_elements_copier = liste_get_nb_elements(voisins);
-        for (int indice_copier = 1; indice_copier <= nb_elements_copier; indice_copier++) {
-            if ((liste_chercher_noeud(fermee, voisins[indice_copier]) == INDICE_NON_TROUVE) && (
-                    liste_chercher_noeud(ouverte, voisins[indice_copier]) == INDICE_NON_TROUVE))
-                liste_ajouter_noeud(ouverte, voisins[indice_copier]);
-        }
-        nb_nouveaux_voisins = liste_get_nb_elements(ouverte) - nb_nouveaux_voisins;
+        labyrinthe_voisins(lab, noeud_ajoute, voisins);
 
-        //DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG
-        for (int j = 0; j < MAX_LIGNES; j++) {
-            for (int i = 0; i < MAX_COLONNES; i++) {
-                laby[j][i] = lab[j][i];
+        int nb_voisins_calcul = liste_get_nb_elements(voisins);
+        for (int indice_calcul = 1; indice_calcul <= nb_voisins_calcul; indice_calcul++) {
+            Noeud voisin_calcul;
+            liste_lire_noeud(voisins, indice_calcul, voisin_calcul);
+
+            if (liste_chercher_noeud(fermee, voisin_calcul) == INDICE_NON_TROUVE) {
+                noeud_set_distance(voisin_calcul, noeud_get_distance(noeud_ajoute) + 1);
+                noeud_set_heuristique(voisin_calcul, labyrinthe_heuristique(voisin_calcul, arrivee));
+                noeud_set_precedent(voisin_calcul, indice_ajoutee);
+
+                int indice_existant = liste_chercher_noeud(ouverte, voisin_calcul);
+                if (indice_existant != INDICE_NON_TROUVE) {
+                    Noeud noeud_existant;
+                    liste_lire_noeud(ouverte, indice_existant, noeud_existant);
+
+                    int distance_voisin_calcul = noeud_get_distance(voisin_calcul);
+                    if (noeud_get_distance(noeud_existant) > distance_voisin_calcul) {
+                        noeud_set_distance(noeud_existant, distance_voisin_calcul);
+                        noeud_set_precedent(noeud_existant, indice_ajoutee);
+
+                        liste_supprimer_noeud(ouverte, indice_existant);
+                        liste_ajouter_noeud(ouverte, noeud_existant);
+                    }
+                } else
+                    liste_ajouter_noeud(ouverte, voisin_calcul);
             }
         }
-        test_labyrinthe_A_Star(laby, ouverte, fermee, chemin);
-        int nb_elements_calcul_voisin = liste_get_nb_elements(ouverte);
-        for (int indice_calcul_voisin = 1; indice_calcul_voisin <= nb_elements_calcul_voisin; indice_calcul_voisin++) {
-            int voisin_ligne_tmp = noeud_get_ligne(ouverte[indice_calcul_voisin]);
-            int voisin_colonne_tmp = noeud_get_colonne(ouverte[indice_calcul_voisin]);
+    }
 
-            Liste adjacent_a_voisin;
-            liste_init(adjacent_a_voisin,MAX_LISTE);
-            const int deplacement[4][2] = {{1, 0}, {0, -1}, {0, 1}, {-1, 0}};
-
-            for (int i = 0; i < 4; i++) {
-                Noeud tmp;
-                noeud_init(tmp, voisin_ligne_tmp + deplacement[i][0], voisin_colonne_tmp + deplacement[i][1],VALEUR_INCONNUE,VALEUR_INCONNUE,VALEUR_INCONNUE);
-
-                int indice_tmp = liste_chercher_noeud(fermee, tmp);
-                if (indice_tmp != INDICE_NON_TROUVE)
-                    liste_ajouter_noeud(adjacent_a_voisin, fermee[indice_tmp]);
-            }
-
-            int nb_elements_adjacent_a_voisin = liste_get_nb_elements(adjacent_a_voisin);
-            for (int i = 1; i < nb_elements_adjacent_a_voisin; i++) {
-                if (noeud_get_distance(adjacent_a_voisin[i]) > noeud_get_distance(adjacent_a_voisin[i + 1])) {
-                    Noeud tmp;
-
-                    noeud_copier(tmp, adjacent_a_voisin[i]);
-                    noeud_copier(adjacent_a_voisin[i], adjacent_a_voisin[i + 1]);
-                    noeud_copier(adjacent_a_voisin[i + 1], tmp);
-                }
-            }
-
-            noeud_set_distance(ouverte[indice_calcul_voisin], (noeud_get_distance(adjacent_a_voisin[1]) + 1));
-            noeud_set_heuristique(ouverte[indice_calcul_voisin], labyrinthe_heuristique(ouverte[indice_calcul_voisin], arrivee));
-            noeud_set_precedent(ouverte[indice_calcul_voisin], liste_chercher_noeud(fermee, adjacent_a_voisin[1]));
-        }
-
-        labyrinthe_deplacer_minimum(fermee, ouverte);
-        indice_actuel += 1;
-        if (noeud_sont_egaux(fermee[indice_actuel], arrivee))
-            fin_trouve = true;
-
-        //DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG
-        for (int j = 0; j < MAX_LIGNES; j++) {
-            for (int i = 0; i < MAX_COLONNES; i++) {
-                laby[j][i] = lab[j][i];
-            }
-        }
-        test_labyrinthe_A_Star(laby, ouverte, fermee, chemin);
-    } while (!(nb_nouveaux_voisins != 0) + (fin_trouve == false));
     return fin_trouve;
 }
 
 bool labyrinthe_A_star(const Labyrinthe lab, Noeud depart, const Noeud arrivee, Liste chemin) {
     bool chemin_trouve = false;
 
-    noeud_init(depart, noeud_get_ligne(depart), noeud_get_colonne(depart), 0, labyrinthe_heuristique(depart, arrivee), -1);
-
     Liste ouverte, fermee;
     liste_init(ouverte,MAX_LISTE);
     liste_init(fermee,MAX_LISTE);
+    liste_init(chemin,MAX_LISTE);
 
-    liste_ajouter_noeud(fermee, depart);
+    noeud_init(depart, noeud_get_ligne(depart), noeud_get_colonne(depart)
+               , 0, labyrinthe_heuristique(depart, arrivee), -1);
 
-    system("cls");
-    if ((chemin_trouve = labyrinthe_A_star_etape(lab, fermee, ouverte, arrivee, chemin)) == true) {
-        labyrinthe_creer_chemin(fermee, arrivee, chemin);
-        //DEBUUUUUUUUUUUUUUUUUUG
-        Labyrinthe laby;
+    liste_ajouter_noeud(ouverte, depart);
 
-        for (int j = 0; j < MAX_LIGNES; j++) {
-            for (int i = 0; i < MAX_COLONNES; i++) {
-                laby[j][i] = lab[j][i];
-            }
-        }
-        test_labyrinthe_A_Star(laby, ouverte, fermee, chemin);
-
-        printf("\n\nBravo! Vous avez trouvez le chemin! Vous[A*] etes trop cool!!1!1!11\n");
-
-        system("pause");
-    } else {
-        //DEBUUUUUUUUUUUUUUUUUUG
-        Labyrinthe laby;
-
-        for (int j = 0; j < MAX_LIGNES; j++) {
-            for (int i = 0; i < MAX_COLONNES; i++) {
-                laby[j][i] = lab[j][i];
-            }
-        }
-        test_labyrinthe_A_Star(laby, ouverte, fermee, chemin);
-
-        printf("\n\nBooooo! \x1b[%d;%d;%dmVous avez donnez un labyrinthe impossible au A* >:C",STYLE_BLINK,FG_BLACK,BG_BLACK);
-        couleurs_reset();
-
-        system("pause");
+    while (liste_get_nb_elements(ouverte) != 0) {
+        if (labyrinthe_A_star_etape(lab, fermee, ouverte, arrivee/*debug*/, chemin) == true)
+            chemin_trouve = true;
     }
+
+    if (chemin_trouve == true) {
+        labyrinthe_creer_chemin(fermee, arrivee, chemin);
+
+        printf("\nBravo! Vous[A*] avez trouvez le chemin! Vous[A*] etes trop cool!!1!1!11\n\n");
+    } else {
+        printf("\nBooooo! \x1b[%d;%d;%dmVous avez donnez un labyrinthe impossible au A* >:C\n\n",STYLE_BOLD,
+               FG_BRIGHT_WHITE,
+               BG_BLACK);
+        couleurs_reset();
+    }
+
     return chemin_trouve;
 }
 
@@ -333,7 +295,7 @@ void test_labyrinthe_A_Star(Labyrinthe lab, const Liste ouverte, const Liste fer
         for (int colonne = 1; colonne <= labyrinthe_get_nb_colonnes(lab); colonne++) {
             char tmp = lab[ligne][colonne];
             if (tmp == '*')
-                couleurs_set(STYLE_RESET, FG_BLACK, BG_BLACK);
+                couleurs_set(STYLE_RESET, FG_BRIGHT_WHITE, BG_BRIGHT_WHITE);
             else if (tmp == 'o')
                 couleurs_set(STYLE_RESET, FG_BRIGHT_GREEN, BG_BRIGHT_GREEN);
             else if (tmp == 'f')

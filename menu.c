@@ -104,7 +104,7 @@ void menu_lire_fichier(Labyrinthe lab) {
 
     // Concatene l'adresse du fichier pour eviter que l'utilisateur ait besoin de faire le travail
     // d'ecrire ../ et .txt
-    sprintf(file_path, "%s%s%s\x0", base_file_path, file_name_buffer, file_type);
+    sprintf(file_path, "%s%s%s", base_file_path, file_name_buffer, file_type);
 
     labyrinthe_lire_fichier(file_path, lab);
 }
@@ -112,6 +112,9 @@ void menu_lire_fichier(Labyrinthe lab) {
 void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
     int caze_ligne = 0;
     int caze_colonne = 0;
+
+    noeud_set_ligne(caze, caze_ligne);
+    noeud_set_colonne(caze, caze_colonne);
 
     int lab_ligne_max = labyrinthe_get_nb_lignes(lab);
     int lab_colonne_max = labyrinthe_get_nb_colonnes(lab);
@@ -125,10 +128,7 @@ void menu_saisir_case(const Labyrinthe lab, Noeud caze) {
         valide = scanf("%d, %d", &caze_ligne, &caze_colonne);
 
         // L'adresse de la caze doit etre dans le labyrinthe et doit etre compose de chiffres
-        // Nous n'utilisons pas labyrinthe_est_case_valide, car le laby.exe ne l'utilise pas pour permettre
-        // de creer des labyrinthes impossibles a resoudre
-        if (valide == true && (caze_ligne > 0 && caze_ligne <= lab_ligne_max)
-            && (caze_colonne > 0 && caze_colonne <= lab_colonne_max)) {
+        if (valide == true && !labyrinthe_est_case_valide(lab, caze)) {
             noeud_set_ligne(caze, caze_ligne);
             noeud_set_colonne(caze, caze_colonne);
         } else {
@@ -180,7 +180,8 @@ bool choix_est_correct(int choix, const Status status) {
     return est_correct;
 }
 
-void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Liste chemin) {
+void menu_traiter_choix(const int choix, Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe,
+                        Liste chemin) {
     switch (choix) {
         case MENU_CHOIX_CHARGER:
             menu_lire_fichier(labyrinthe);
@@ -200,10 +201,9 @@ void menu_traiter_choix(int choix, Status status, Noeud depart, Noeud arrivee, L
             status[MENU_STATUS_INDICE_ARRIVEE] = true;
             break;
         case MENU_CHOIX_CHERCHER:
-            liste_init(chemin,MAX_LISTE);
-
             if (labyrinthe_A_star(labyrinthe, depart, arrivee, chemin) == true)
                 liste_afficher(chemin);
+
             system("pause");
             break;
         case MENU_CHOIX_QUITTER:
@@ -245,14 +245,17 @@ bool menu(Status status, Noeud depart, Noeud arrivee, Labyrinthe labyrinthe, Lis
 
     printf("%i. Quitter\nVotre choix ? ", MENU_CHOIX_QUITTER);
 
-    int choix = -1;
+    int choix;
     bool valide = false;
     do {
+        // Ce fflush sert a eviter le cas ou le printf de "default:" dans choix_est_correct
+        // rentre dans stdin du prochain scanf et resulte en une boucle infinie comme laby.exe ;)
+        fflush(stdin);
         // valide = scanf("%d",&choix) ici met l'utilisateur dans une boucle jusqu'a ce qu'il
         // entre un entier, mais nous voulons lui indiquer quoi ecrire s'il se trompe avec une lettre
         // par exemple
         choix = getchar();
-        choix -= '0';
+        choix -= 48;
         // valide est = true si le choix est entre 1 et 6
         if (choix_est_correct(choix, status)) {
             valide = true;
